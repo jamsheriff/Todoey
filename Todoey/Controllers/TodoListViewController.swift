@@ -1,14 +1,14 @@
 //
-//  ViewController.swift
+//  TodoListViewController.swift
 //  Todoey
 //
-//  Created by Sherif Musa on 11.02.2020.
+//  Created by Sherif Musa on 14.02.2020.
 //  Copyright © 2020 Sherif Musa. All rights reserved.
 //
 
 import UIKit
 import RealmSwift
- 
+import ChameleonFramework
 
 class TodoListViewController: SwipeTableViewController {
     
@@ -33,11 +33,11 @@ class TodoListViewController: SwipeTableViewController {
             title = selectedCategory!.name
             guard let navBar = navigationController?.navigationBar else { fatalError("Navigation controller does not exist.")
             }
-            if let navBarColour = UIColor(named: colourHex) {
+            if let navBarColour = UIColor(hexString: colourHex) {
                 //Original setting: navBar.barTintColor = UIColor(hexString: colourHex)
                 //Revised for iOS13 w/ Prefer Large Titles setting:
                 navBar.backgroundColor = navBarColour
-                navBar.tintColor =  navBarColour
+                navBar.tintColor = ContrastColorOf(backgroundColor: navBarColour, returnFlat: true)
                 searchBar.barTintColor = navBarColour
             }
         }
@@ -53,7 +53,10 @@ class TodoListViewController: SwipeTableViewController {
         let cell = super.tableView(tableView, cellForRowAt: indexPath)
         if let item = toDoItems?[indexPath.row] {
             cell.textLabel?.text = item.title
-           
+            if let colour = UIColor(hexString: selectedCategory!.colour)?.darken(byPercentage: CGFloat(indexPath.row) / CGFloat(toDoItems!.count)) {
+                cell.backgroundColor = colour
+                cell.textLabel?.textColor = ContrastColorOf(backgroundColor: colour, returnFlat: true)
+            }
             cell.accessoryType = item.done ? .checkmark : .none
         } else {
             cell.textLabel?.text = "No Items Added"

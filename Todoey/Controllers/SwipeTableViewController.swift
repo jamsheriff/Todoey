@@ -8,7 +8,7 @@
 
 import UIKit
 import SwipeCellKit
-//import RealmSwift
+import RealmSwift
 
 class SwipeTableViewController: UITableViewController, SwipeTableViewCellDelegate {
     
@@ -57,4 +57,3 @@ class SwipeTableViewController: UITableViewController, SwipeTableViewCellDelegat
     
     
 }
-

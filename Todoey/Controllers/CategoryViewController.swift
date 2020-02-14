@@ -8,6 +8,7 @@
 
 import UIKit
 import RealmSwift
+import ChameleonFramework
 
 class CategoryViewController: SwipeTableViewController {
     
@@ -15,8 +16,6 @@ class CategoryViewController: SwipeTableViewController {
     
     // Potential namespace clash with OpaquePointer (same name of Category)
     // Use correct type from dropdown or add backticks to fix e.g., var categories = [`Category`]()
-     
-    
     var categories: Results<Category>?
     
     override func viewDidLoad() {
@@ -29,7 +28,7 @@ class CategoryViewController: SwipeTableViewController {
     override func viewWillAppear(_ animated: Bool) {
         guard let navBar = navigationController?.navigationBar else { fatalError("Navigation controller does not exist.")
         }
-        navBar.backgroundColor = UIColor(named: "#1D9BF6")
+        navBar.backgroundColor = UIColor(hexString: "#1D9BF6")
     }
     
     //Mark: - Tableview Datasource Methods
@@ -43,9 +42,9 @@ class CategoryViewController: SwipeTableViewController {
         cell.textLabel?.text = categories?[indexPath.row].name ?? "No Categories added yet"
         
         if let category = categories?[indexPath.row] {
-            guard let categoryColour = UIColor(named: category.colour) else {fatalError()}
+            guard let categoryColour = UIColor(hexString: category.colour) else {fatalError()}
             cell.backgroundColor = categoryColour
-            cell.textLabel?.textColor =  categoryColour
+            cell.textLabel?.textColor = ContrastColorOf(backgroundColor: categoryColour, returnFlat: true)
         }
         return cell
     }
@@ -90,7 +89,8 @@ class CategoryViewController: SwipeTableViewController {
         let action = UIAlertAction(title: "Add", style: .default) { (action) in
             let newCategory = Category()
             newCategory.name = textField.text!
-          
+            newCategory.colour = UIColor.randomFlat().hexValue()
+            self.save(category: newCategory)
         }
         
         alert.addAction(action)
